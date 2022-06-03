@@ -1,0 +1,6 @@
+apify_storage/datasets
+apify_storage/request_queues
+apify_storage/key_value_stores/my-key-value-store-for-sessions
+node_modules
+google-images
+google-logger

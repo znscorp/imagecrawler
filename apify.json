@@ -1,0 +1,6 @@
+{
+	"name": "apify-imagecrawler-actor",
+	"version": "0.0",
+	"buildTag": "latest",
+	"template": "cheerio_crawler"
+}

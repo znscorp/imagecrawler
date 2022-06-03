@@ -1,0 +1,24 @@
+{
+	"name": "apify-gnc-actor",
+	"version": "0.0.1",
+	"description": "gnc product scraper.",
+	"dependencies": {
+		"apify": "^0.22.4",
+		"cheerio": "^1.0.0-rc.3",
+		"puppeteer" : "^13.0.0",
+		"puppeteer-extra" : "^3.2.0",
+		"puppeteer-extra-plugin-stealth" : "^2.9.0",
+		"sharp" : "^0.30.5",
+		"axios" : "^0.27.2",
+		"difflib" : "^0.2.4"
+	},
+	"devDependencies": {
+		"@apify/eslint-config": "0.0.3",
+		"eslint": "^6.7.2"
+	},
+	"scripts": {
+		"start": "node src/main.js"
+	},
+	"author": "Tugkan Cengiz",
+	"license": "ISC"
+}

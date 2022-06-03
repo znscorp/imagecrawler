@@ -1,0 +1,32 @@
+{
+    "title": "google image Scraper",
+    "description": "An actor that scrapes image from google",
+    "type": "object",
+    "schemaVersion": 1,
+    "properties": {
+        "url": {
+            "title": "Start URL",
+            "type": "string",
+            "description": "URLs to start with",
+            "editor": "textfield"
+        },
+        "keyword": {
+            "title": "Search Keywords",
+            "type": "array",
+            "description": "Keyword that you want to search",
+            "editor": "requestListSources"
+        },
+        "category": {
+            "title": "Search Category",
+            "type": "string",
+            "description": "Category that you want to search",
+            "editor": "textfield"
+        },
+        "pages": {
+            "title": "Pages",
+            "type": "string",
+            "description": "Pages for search. 1-5 for sequential usage and 1,5,6 for single usage",
+            "editor": "textfield"
+        }
+    }
+}
