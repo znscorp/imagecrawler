@@ -3,7 +3,7 @@
 // const tools = require('./tools');
 const sharp = require('sharp');
 const fs = require('fs');
-const { exit } = require('process');
+const crypto = require('crypto');
 
 const logfile = `zns-logger-${Date.now()}.log`;
 
@@ -94,8 +94,19 @@ const znsLogger = async (logger) => {
     });
 }
 
+
+const stringToHash = (string) => {
+
+    const secret = 'zns0$6$07$%@^&!@#';
+    const hash = crypto.createHmac('sha256', secret)
+                                .update(string).digest('hex');
+
+    return hash;
+}
+
 module.exports = {
     BufferToImage,
     ImageToBuffer,
-    znsLogger
+    stringToHash,
+    znsLogger 
 };

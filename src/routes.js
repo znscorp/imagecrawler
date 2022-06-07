@@ -26,20 +26,20 @@ exports.SEARCH = async({ $, request }, { requestQueue }) => {
     let items = searchList.find('div.isv-r');
     const logger = {};
 
-    let keyword = userData.newKeyword;
-    const newKeyword = userData.newKeyword;
-    const orgKeyword = userData.orgKeyword;
+    let keyword = userData.keyword;
+    let hash = userData.hash ? userData.hash : extractors.stringToHash(keyword);
 
     // origin keyword
-    logger.Keyword = orgKeyword;
+    logger.Keyword = keyword;
     logger.SearchURL = userData.baseURL;
 
-    if( keyword.match(/\"(.*)\"/) ){
-        keyword = keyword.replace(/\"/gi, "");
-    }
+    // 이미지명 sha256 저장
+    // if( keyword.match(/\"(.*)\"/) ){
+    //     keyword = keyword.replace(/\"/gi, "");
+    // }
 
     // 상품명으로 저장 불가능한 특수문자 제거
-    keyword = keyword.replace(/\s|[\|\*\/\?\<\>\:\\]/gi, "_");
+    // keyword = keyword.replace(/\s|[\|\*\/\?\<\>\:\\]/gi, "_");
 
     if( items.length > 0 ){       
         for( var i = 0; i < items.length; i++ ){
@@ -49,14 +49,14 @@ exports.SEARCH = async({ $, request }, { requestQueue }) => {
             const img = items.eq(i).find('img');
             const alt = img.attr('alt').trim();
 
-            const s = new difflib.SequenceMatcher(null, orgKeyword, alt);
+            const s = new difflib.SequenceMatcher(null, keyword, alt);
             const diffRatio = s.ratio();
 
             // 긁어온 상품과 키워드 매칭율 비교
             if( diffRatio < 0.5 ) continue;
 
             const src = img.attr('src');
-            const imgnm = `${keyword}-${tcnt+1}.jpg`;
+            const imgnm = `${hash}-${tcnt+1}.jpg`;
             
             if( src ){
                 if( src.search(/;base64,/gi) != -1 ){
@@ -96,7 +96,7 @@ exports.SEARCH = async({ $, request }, { requestQueue }) => {
         tcnt < maxCnt ){
     
         // 우선 구글쇼핑 검색
-        const setKeyword = `${newKeyword}`;
+        const setKeyword = `${keyword}`;
         const queryString = `q=${encodeURIComponent(setKeyword)}`;
         const shopUrl = `https://www.google.co.kr/search?${queryString}&hl=ko&tbm=shop&psb=1&ved=2`;
 
@@ -106,8 +106,8 @@ exports.SEARCH = async({ $, request }, { requestQueue }) => {
                 label: 'SHOPPING',
                 page: userData.page,
                 baseURL: shopUrl,
-                newKeyword: setKeyword,
-                orgKeyword: orgKeyword,
+                keyword: keyword,
+                hash: hash,
                 retry: userData.retry,
                 cnt: tcnt
             }
@@ -130,26 +130,18 @@ exports.SHOPPING = async({ $, request }, { requestQueue }) => {
 
     const logger = {};
     const quality = 100;
-    const maxCnt = 3;
-    let tcnt = userData.cnt;
+    const maxCnt = 3;    
     
     const list = $('.sh-pr__product-results');
-    const items = list.find('.sh-dgr__grid-result');
+    const items = list.find('.sh-dgr__grid-result');    
+    const hash = userData.hash;
 
-    let keyword = userData.newKeyword;
-    let orgKeyword = userData.orgKeyword;
-    let nameKeyword = "";
+    let tcnt = userData.cnt;
+    let keyword = userData.keyword;    
 
     // origin keyword
-    logger.Keyword = orgKeyword;
+    logger.Keyword = keyword;
     logger.SearchURL = userData.baseURL;
-
-    if( keyword.match(/\"(.*)\"/) ){
-        nameKeyword = orgKeyword.replace(/\"/gi, "");
-    }
-
-    // 상품명으로 저장 불가능한 특수문자 제거
-    nameKeyword = orgKeyword.replace(/\s|[\|\*\/\?\<\>\:\\]/gi, "_");
 
     if( items.length > 0 ){
         
@@ -161,13 +153,13 @@ exports.SHOPPING = async({ $, request }, { requestQueue }) => {
             const alt = items.eq(i).find('h4.Xjkr3b').text().trim();
 
             // 긁어온 상품과 키워드 매칭율 비교
-            const s = new difflib.SequenceMatcher(null, orgKeyword, alt);
+            const s = new difflib.SequenceMatcher(null, keyword, alt);
             const diffRatio = s.ratio();
 
             if( diffRatio < 0.45 ) continue;
 
             const src = img.attr('src');
-            const imgnm = `${nameKeyword}-${tcnt+1}.jpg`;
+            const imgnm = `${hash}-${tcnt+1}.jpg`;
 
             if( src ){
                 await axios.get(src, {
@@ -208,8 +200,8 @@ exports.SHOPPING = async({ $, request }, { requestQueue }) => {
                 label: 'SEARCH',
                 page: userData.page,
                 baseURL : addurl,
-                newKeyword: newKeyword,
-                orgKeyword: orgKeyword,
+                keyword: newKeyword,
+                hash: hash,
                 retry : userData.retry,
                 cnt: tcnt
             },
@@ -217,9 +209,10 @@ exports.SHOPPING = async({ $, request }, { requestQueue }) => {
     }
     else{
         logger.lastQueue = true;
+        logger.ImageCount = tcnt;
     }
     
-    logger.ImageCount = tcnt;
+    
     logger.type = 'SHOPPING';
     extractors.znsLogger(logger);
 }

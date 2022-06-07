@@ -1,5 +1,4 @@
 const Apify = require('apify');
-const { extractUrlsFromCheerio } = require('apify/build/enqueue_links/enqueue_links');
 const routes = require('./routes');
 const extractors = require('./extractors');
 
@@ -48,6 +47,7 @@ exports.getSources = async() => {
                 - 제외검색어
                 ~ 유의어 검색
                 or 두단어 검색
+                                
             
             - 이미지 유형검색
             itp:face ※ 얼굴
@@ -69,8 +69,7 @@ exports.getSources = async() => {
                     label: 'SEARCH',
                     page: 1,
                     baseURL: url,
-                    orgKeyword: word,
-                    newKeyword: word,
+                    keyword: word,
                     retry: 0,
                     cnt: 0
                 }
