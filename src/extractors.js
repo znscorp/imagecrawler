@@ -13,7 +13,7 @@ const ImageToBuffer = async( data, quality ) => {
     const maxSize = 200;
 
     if( data ){
-        const buff = await sharp(data)            
+        const buff = await sharp(data)
             .toBuffer({ resolveWithObject: true });
 
         if( buff.info && 
@@ -95,11 +95,11 @@ const znsLogger = async (logger) => {
 }
 
 
-const stringToHash = (string) => {
+const stringToHash = (string) => {        
 
     const secret = 'zns0$6$07$%@^&!@#';
     const hash = crypto.createHmac('sha256', secret)
-                                .update(string).digest('hex');
+                        .update(string).digest('hex');
 
     return hash;
 }

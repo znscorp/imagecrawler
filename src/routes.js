@@ -33,14 +33,6 @@ exports.SEARCH = async({ $, request }, { requestQueue }) => {
     logger.Keyword = keyword;
     logger.SearchURL = userData.baseURL;
 
-    // 이미지명 sha256 저장
-    // if( keyword.match(/\"(.*)\"/) ){
-    //     keyword = keyword.replace(/\"/gi, "");
-    // }
-
-    // 상품명으로 저장 불가능한 특수문자 제거
-    // keyword = keyword.replace(/\s|[\|\*\/\?\<\>\:\\]/gi, "_");
-
     if( items.length > 0 ){       
         for( var i = 0; i < items.length; i++ ){
 
@@ -109,12 +101,23 @@ exports.SEARCH = async({ $, request }, { requestQueue }) => {
                 keyword: keyword,
                 hash: hash,
                 retry: userData.retry,
-                cnt: tcnt
+                cnt: tcnt,
+                end: userData.end,
             }
         });
     }
     else{
         logger.lastQueue = true;
+    }
+
+    if( await requestQueue.isEmpty() ){
+
+        const addQue = await tools.streamQueue(userData.end);
+        if( addQue.length > 0 ){
+            for( const que of addQue ){
+                await requestQueue.addRequest(que);
+            }
+        }
     }
 
     logger.ImageCount = tcnt;
@@ -203,7 +206,8 @@ exports.SHOPPING = async({ $, request }, { requestQueue }) => {
                 keyword: newKeyword,
                 hash: hash,
                 retry : userData.retry,
-                cnt: tcnt
+                cnt: tcnt,
+                end: userData.end,
             },
         });
     }
@@ -211,7 +215,16 @@ exports.SHOPPING = async({ $, request }, { requestQueue }) => {
         logger.lastQueue = true;
         logger.ImageCount = tcnt;
     }
-    
+
+    if( await requestQueue.isEmpty() ){
+
+        const addQue = await tools.streamQueue(userData.end);
+        if( addQue.length > 0 ){
+            for( const que of addQue ){
+                await requestQueue.addRequest(que);
+            }
+        }
+    }
     
     logger.type = 'SHOPPING';
     extractors.znsLogger(logger);

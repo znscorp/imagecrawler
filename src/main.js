@@ -27,19 +27,19 @@ Apify.main(async() => {
 
     log.info('PHASE -- STARTING ACTOR.');
 
-    global.inputData = await Apify.getInput();
-    log.info('ACTOR OPTIONS: -- ', global.inputData);
+    // global.inputData = await Apify.getInput();
+    // log.info('ACTOR OPTIONS: -- ', global.inputData);
 
     // Validate input
-    tools.checkInput();
+    // tools.checkInput();
 
     // Create request queue
     const requestQueue = await Apify.openRequestQueue();
  
     // Initialize first request
-    const pages = await tools.getSources();
+    const pages = await tools.streamQueue(0);   
 
-    for (const page of pages) {
+    for (const page of pages) {            
         await requestQueue.addRequest({...page });
     }
 
