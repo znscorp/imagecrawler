@@ -10,7 +10,8 @@
 		"puppeteer-extra-plugin-stealth" : "^2.9.0",
 		"sharp" : "^0.30.5",
 		"axios" : "^0.27.2",
-		"difflib" : "^0.2.4"
+		"difflib" : "^0.2.4",
+		"csv-parse" : "^5.1.0"
 	},
 	"devDependencies": {
 		"@apify/eslint-config": "0.0.3",

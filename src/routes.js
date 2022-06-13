@@ -39,7 +39,7 @@ exports.SEARCH = async({ $, request }, { requestQueue }) => {
             if( tcnt == maxCnt ) break;
             
             const img = items.eq(i).find('img');
-            const alt = img.attr('alt').trim();
+            const alt = img.attr('alt');
 
             const s = new difflib.SequenceMatcher(null, keyword, alt);
             const diffRatio = s.ratio();
@@ -59,7 +59,7 @@ exports.SEARCH = async({ $, request }, { requestQueue }) => {
                     if( typeof buffer == 'object' ){
                         // save Image
                         logger[`${i+1}`] = buffer.info;
-                        await extractors.BufferToImage(buffer.data, imgnm);                        
+                        await extractors.BufferToImage(buffer.data, imgnm);
                         tcnt++;
                     }
                 }

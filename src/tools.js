@@ -7,7 +7,6 @@ const {
     utils: { log },
 } = Apify;
 
-const stream = fs.createReadStream('./train_origin_product.csv');
 
 exports.getRandomInt = (min, max) => { //min ~ max 사이의 임의의 정수 반환
     return Math.floor(Math.random() * (max - min)) + min;
@@ -82,6 +81,7 @@ exports.streamQueue = async (from) => {
 
     log.info(`ACTOR - ADD QUEUE FOR STREAM LIMIT ${start} ~ ${end}`);
     
+    const stream = fs.createReadStream('./train_origin_product.csv');
     const parser = stream.pipe(
         parse({
             columns: true, 
@@ -98,8 +98,11 @@ exports.streamQueue = async (from) => {
 
         const keyword = Object.values(csvData).join(',');
         queList.push(this.getSources(keyword, end));
+
     } 
 
+
+    
     return queList;
 };
 
