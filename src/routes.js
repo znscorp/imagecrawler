@@ -52,6 +52,7 @@ exports.SEARCH = async({ $, request }, { requestQueue }) => {
             
             if( src ){
                 if( src.search(/;base64,/gi) != -1 ){
+
                     const bs64 = src.split(';base64,').pop();
                     const buff = Buffer.from(bs64, 'base64');
                     const buffer = await extractors.ImageToBuffer(buff, quality);
@@ -67,7 +68,8 @@ exports.SEARCH = async({ $, request }, { requestQueue }) => {
                     await axios.get(src, { 
                             responseType: 'arraybuffer' 
                         })
-                        .then(async (res) => {                        
+                        .then(async (res) => {             
+                            console.log('res check', res);
                         const buff = res.data;
                         const buffer = await extractors.ImageToBuffer(buff, quality); 
                         
@@ -77,6 +79,8 @@ exports.SEARCH = async({ $, request }, { requestQueue }) => {
                             await extractors.BufferToImage(buffer.data, imgnm);
                             tcnt++;
                         }
+                    }).catch((error) => {
+                        console.log(error.response.status);
                     });
                 }
             }
@@ -119,7 +123,7 @@ exports.SEARCH = async({ $, request }, { requestQueue }) => {
             }
         }
     }
-
+    
     logger.ImageCount = tcnt;
     logger.type = 'SEARCH';
     extractors.znsLogger(logger);
